@@ -50,7 +50,9 @@ var main = function () { return __awaiter(_this, void 0, void 0, function () {
                 return [4 /*yield*/, plugins_1.runPlugin(context, "javascript")];
             case 1:
                 _a.sent();
-                console.log("Done");
+                return [4 /*yield*/, context.write("output")];
+            case 2:
+                _a.sent();
                 return [2 /*return*/];
         }
     });
