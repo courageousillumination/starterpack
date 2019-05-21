@@ -19,9 +19,18 @@ const promptAsync = async (
 class Context {
   private files: StarterPackFile[] = [];
   private options: ConfigOption[] = [];
+  private pluginContexts: { [index: string]: any } = {};
 
   public registerConfigOption(configOption: ConfigOption) {
     this.options.push(configOption);
+  }
+
+  public registerPluginContext(name: string, pluginContext: any) {
+    this.pluginContexts[name] = pluginContext;
+  }
+
+  public getPluginContext(name: string) {
+    return this.pluginContexts[name];
   }
 
   public addFile(file: StarterPackFile) {
@@ -35,7 +44,7 @@ class Context {
     });
 
     // Fill in all of the options
-    const configuration: { [index: string]: string } = {};
+    let configuration: { [index: string]: string } = {};
     for (const configOption of this.options) {
       if (configOption.prompt) {
         configuration[configOption.name] = await promptAsync(
@@ -43,6 +52,14 @@ class Context {
           configOption.prompt
         );
       }
+    }
+
+    // Get all config options from plugins.
+    for (const pluginContext of Object.values(this.pluginContexts)) {
+      configuration = {
+        ...configuration,
+        ...pluginContext.getConfigOptions()
+      };
     }
 
     await promises.mkdir(location, { recursive: true });
