@@ -1,20 +1,11 @@
-import { Extension } from "./extensions";
 import readline from "readline";
+import { promptAsync } from "../utils/readline";
 
 export interface ConfigOption {
   name: string;
   prompt?: string;
   value?: any;
 }
-
-const promptAsync = async (
-  rl: readline.Interface,
-  prompt: string
-): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    rl.question(prompt, answer => resolve(answer));
-  });
-};
 
 class Configuration {
   private options: Map<string, ConfigOption> = new Map<string, ConfigOption>();
