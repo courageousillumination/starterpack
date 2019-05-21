@@ -1,11 +1,10 @@
-import Context from "../core/context";
-import { runPlugin } from "../core/plugins";
+import StarterPack from "../core/starterpack";
 
 const main = async () => {
-  const context = new Context();
-  await runPlugin(context, "javascript");
-  await runPlugin(context, "eslint");
-  await context.write("output");
+  const starterPack = new StarterPack();
+  await starterPack.registerExtension("../extensions/javascript/");
+  await starterPack.registerExtension("../extensions/eslint/");
+  await starterPack.apply("output");
 };
 
 main();

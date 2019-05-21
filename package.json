@@ -4,7 +4,8 @@
   "description": "Build customizable software projets.",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/scripts/starterpack.ts"
+    "start": "ts-node ./src/scripts/starterpack.ts",
+    "test": "mocha -r ts-node/register src/**/*-test.ts"
   },
   "author": "Tristan Rasmussen",
   "license": "ISC",
@@ -14,7 +15,11 @@
     "typescript": "^3.0.3"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
     "@types/node": "^10.14.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
     "ts-node": "^7.0.1"
   }
 }

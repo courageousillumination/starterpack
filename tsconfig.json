@@ -5,6 +5,7 @@
     "lib": ["es2017"],
     "outDir": "./build",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "downlevelIteration": true
   }
 }
