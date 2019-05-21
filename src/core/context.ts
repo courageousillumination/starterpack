@@ -1,45 +1,17 @@
-import * as fs from "fs";
-
-import File from "./file";
+import StarterPackFile from "./file/file";
+import { promises } from "fs";
 
 class Context {
-  private files: File[];
-  private pythonRequirements?: File;
-  constructor() {
-    this.files = [];
-    this.pythonRequirements = null;
-  }
-  /**
-   * Adds a file to the root of this context.
-   * @param file
-   */
-  public addFile(file: File) {
+  private files: StarterPackFile[] = [];
+  public addFile(file: StarterPackFile) {
     this.files.push(file);
   }
 
-  /**
-   * Adds a python dependency.
-   * @param requirement
-   */
-  public addPythonRequirement(requirement: string) {
-    if (!this.pythonRequirements) {
-      this.pythonRequirements = new File("requirements.txt", "");
-    }
+  public async write(location: string) {
+    await promises.mkdir(location, { recursive: true });
 
-    this.pythonRequirements.append(requirement);
-  }
-
-  /**
-   * Writes this context to a given directory.
-   * @param dir
-   */
-  public write(dir: string) {
-    this.files.map(file => {
-      file.write(dir);
-    });
-
-    if (this.pythonRequirements) {
-      this.pythonRequirements.write(dir);
+    for (const file of this.files) {
+      await file.write(location);
     }
   }
 }
