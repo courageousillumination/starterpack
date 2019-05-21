@@ -2,6 +2,7 @@ import { Extension } from "../../core/extensions";
 import Writer from "../../core/writer";
 import Configuration from "../../core/config";
 import Context from "../../core/context";
+import { StartupScriptContext } from "../startupScript";
 
 export class JavascriptContext {
   private devDependencies: { [index: string]: string } = {};
@@ -25,6 +26,13 @@ class JavascriptExtension implements Extension {
 
   public register(context: Context) {
     context.addExtensionContext(this.extensionId, this.context);
+
+    const startupContext = context.getExtensionContext("startupScript") as
+      | StartupScriptContext
+      | undefined;
+    if (startupContext) {
+      startupContext.addStartupCommand("npm install");
+    }
   }
 
   public getConfigOptions() {

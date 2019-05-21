@@ -13,9 +13,14 @@ class Writer {
     await fs.promises.mkdir(this.baseLocation, { recursive: true });
   }
 
-  public writeFile(fileName: string, content: string) {
+  public writeFile(fileName: string, content: string, permisisons?: string) {
+    const location = path.join(this.baseLocation, fileName);
     this.outstandingWrites.push(
-      fs.promises.writeFile(path.join(this.baseLocation, fileName), content)
+      fs.promises.writeFile(location, content).then(() => {
+        if (permisisons) {
+          return fs.promises.chmod(location, permisisons);
+        }
+      })
     );
   }
 
