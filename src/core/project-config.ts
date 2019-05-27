@@ -7,7 +7,7 @@ export interface ConfigOption {
   value?: any;
 }
 
-class Configuration {
+class ProjectConfiguration {
   private options: Map<string, ConfigOption> = new Map<string, ConfigOption>();
 
   public addConfigurationOption(option: ConfigOption) {
@@ -46,4 +46,4 @@ class Configuration {
   }
 }
 
-export default Configuration;
+export default ProjectConfiguration;

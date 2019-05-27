@@ -2,7 +2,7 @@ import Context from "../../core/context";
 import { Extension } from "../../core/extensions";
 import { JavascriptContext } from "../javascript";
 import Writer from "../../core/writer";
-import Configuration from "../../core/config";
+import ProjectConfiguration from "../../core/project-config";
 
 class TypescirptExtension implements Extension {
   public extensionId: string = "typescript";
@@ -14,7 +14,7 @@ class TypescirptExtension implements Extension {
     javascriptContext.addDevDependency("typescript");
   }
 
-  public writeFiles(writer: Writer, config: Configuration) {
+  public writeFiles(writer: Writer, config: ProjectConfiguration) {
     const tsconfig = {
       compilerOptions: {
         target: "es5",

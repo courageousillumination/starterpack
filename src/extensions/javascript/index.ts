@@ -1,8 +1,8 @@
 import { Extension } from "../../core/extensions";
 import Writer from "../../core/writer";
-import Configuration from "../../core/config";
+import ProjectConfiguration from "../../core/project-config";
 import Context from "../../core/context";
-import { StartupScriptContext } from "../startupScript";
+import { StartupScriptContext } from "../startup-script";
 
 export class JavascriptContext {
   private devDependencies: { [index: string]: string } = {};
@@ -45,14 +45,14 @@ class JavascriptExtension implements Extension {
     ];
   }
 
-  public writeFiles(writer: Writer, config: Configuration) {
+  public writeFiles(writer: Writer, config: ProjectConfiguration) {
     writer.writeFile(
       "package.json",
       JSON.stringify(this.buildPackageJson(config), undefined, 4)
     );
   }
 
-  private buildPackageJson(config: Configuration) {
+  private buildPackageJson(config: ProjectConfiguration) {
     const packageJson: { [index: string]: any } = {
       name: config.getOptionValue("projectName")
     };

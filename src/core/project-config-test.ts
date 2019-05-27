@@ -1,10 +1,10 @@
-import Configuration from "./config";
+import ProjectConfiguration from "./project-config";
 import { expect } from "chai";
 
-describe("Configuration", () => {
-  let config: Configuration;
+describe("ProjectConfiguration", () => {
+  let config: ProjectConfiguration;
   beforeEach(() => {
-    config = new Configuration();
+    config = new ProjectConfiguration();
   });
   describe("simple option operations", () => {
     beforeEach(() => {

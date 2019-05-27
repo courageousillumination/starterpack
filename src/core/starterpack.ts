@@ -1,10 +1,27 @@
 import { Extension } from "./extensions";
-import Configuration from "./config";
+import ProjectConfiguration from "./project-config";
 import Writer from "./writer";
 import Context from "./context";
+import { StarterPackConfig } from "./starterpack-config";
 
 class StarterPack {
   private extensions: Extension[] = [];
+
+  public static async createFromConfig(
+    config: StarterPackConfig
+  ): Promise<StarterPack> {
+    const starterPack = new StarterPack();
+    for (const extension of config.extensions) {
+      await starterPack.registerExtension(`../extensions/${extension}`);
+    }
+    return starterPack;
+  }
+
+  public getFullConfig(): StarterPackConfig {
+    return {
+      extensions: this.getExtensions().map(ex => ex.extensionId)
+    };
+  }
 
   public async registerExtension(extension: string) {
     const extensionModule = await import(extension);
@@ -45,8 +62,8 @@ class StarterPack {
   }
 
   /** Fills the configuration based on all the extensions. */
-  private async fillConfig(): Promise<Configuration> {
-    const config = new Configuration();
+  private async fillConfig(): Promise<ProjectConfiguration> {
+    const config = new ProjectConfiguration();
     for (const extension of this.extensions) {
       if (extension.getConfigOptions) {
         const options = extension.getConfigOptions();

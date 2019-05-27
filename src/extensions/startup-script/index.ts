@@ -1,6 +1,6 @@
 import { Extension } from "../../core/extensions";
 import Writer from "../../core/writer";
-import Configuration from "../../core/config";
+import ProjectConfiguration from "../../core/project-config";
 import Context from "../../core/context";
 
 export class StartupScriptContext {
@@ -16,7 +16,7 @@ export class StartupScriptContext {
 }
 
 class StartupScriptExtension implements Extension {
-  public extensionId: string = "startupScript";
+  public extensionId: string = "startup-script";
   private context: StartupScriptContext;
 
   constructor() {
@@ -27,7 +27,7 @@ class StartupScriptExtension implements Extension {
     context.addExtensionContext(this.extensionId, this.context);
   }
 
-  public writeFiles(writer: Writer, config: Configuration) {
+  public writeFiles(writer: Writer, config: ProjectConfiguration) {
     const commands = this.context.getStartupCommands();
     if (commands.length) {
       commands.push("rm startup.sh");

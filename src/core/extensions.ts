@@ -1,4 +1,4 @@
-import Configuration, { ConfigOption } from "./config";
+import ProjectConfiguration, { ConfigOption } from "./project-config";
 import Writer from "./writer";
 import Context from "./context";
 
@@ -19,5 +19,5 @@ export interface Extension {
   /**
    * Writes all files for this extension.
    */
-  writeFiles?: (writer: Writer, configuration: Configuration) => void;
+  writeFiles?: (writer: Writer, configuration: ProjectConfiguration) => void;
 }
