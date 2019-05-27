@@ -1,3 +1,4 @@
+#!/usr/bin/env/node
 import StarterPack from "../core/starterpack";
 import readline from "readline";
 import { promptAsync } from "../utils/readline";

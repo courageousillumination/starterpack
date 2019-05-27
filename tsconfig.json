@@ -2,9 +2,10 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "outDir": "./build",
     "strict": true,
+    "jsx": "react",
     "esModuleInterop": true,
     "downlevelIteration": true
   }
