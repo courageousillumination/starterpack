@@ -36,26 +36,32 @@ class StarterPack {
 
   /**
    * Applies the starter pack to the given location.
-   * This will inovke all extensions on the given location and ultimately
-   * prepare the location for the new project.
+   *
+   * The steps in this function are as follows:
+   * 1) Register all extensions. This ensures that the context has all
+   *    appropriate extension contexts.
+   * 2) Apply any cross extension steps.
+   * 3) Fill the configuration.
+   * 4) Write files.
+   *
    * @param location
    */
   public async apply(location: string) {
     const context = new Context();
 
     for (const extension of this.extensions) {
-      if (extension.register) {
-        extension.register(context);
-      }
+      extension.register(context);
+    }
+
+    for (const extension of this.extensions) {
+      extension.applyCrossExtensionSteps(context);
     }
 
     const config = await this.fillConfig();
     const writer = new Writer(location);
     await writer.initalize();
     for (const extension of this.extensions) {
-      if (extension.writeFiles) {
-        extension.writeFiles(writer, config);
-      }
+      extension.writeFiles(writer, config);
     }
 
     await writer.allFilesWritten();

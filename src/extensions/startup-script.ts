@@ -1,7 +1,6 @@
-import { Extension } from "../../core/extensions";
-import Writer from "../../core/writer";
-import ProjectConfiguration from "../../core/project-config";
-import Context from "../../core/context";
+import { Extension } from "../core/extensions";
+import Writer from "../core/writer";
+import ProjectConfiguration from "../core/project-config";
 
 export class StartupScriptContext {
   private commands: string[] = [];
@@ -15,16 +14,13 @@ export class StartupScriptContext {
   }
 }
 
-class StartupScriptExtension implements Extension {
+class StartupScriptExtension extends Extension {
   public extensionId: string = "startup-script";
-  private context: StartupScriptContext;
+  protected context: StartupScriptContext;
 
   constructor() {
+    super();
     this.context = new StartupScriptContext();
-  }
-
-  public register(context: Context) {
-    context.addExtensionContext(this.extensionId, this.context);
   }
 
   public writeFiles(writer: Writer, config: ProjectConfiguration) {

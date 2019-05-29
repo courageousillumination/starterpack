@@ -1,8 +1,9 @@
-import { Extension } from "../../core/extensions";
-import Writer from "../../core/writer";
-import ProjectConfiguration from "../../core/project-config";
-import Context from "../../core/context";
-import { StartupScriptContext } from "../startup-script";
+import { Extension } from "../core/extensions";
+import Writer from "../core/writer";
+import ProjectConfiguration from "../core/project-config";
+import Context from "../core/context";
+import { StartupScriptContext } from "./startup-script";
+import { GitContext } from "./git";
 
 export class JavascriptContext {
   private devDependencies: { [index: string]: string } = {};
@@ -16,23 +17,19 @@ export class JavascriptContext {
   }
 }
 
-class JavascriptExtension implements Extension {
+class JavascriptExtension extends Extension {
   public extensionId: string = "javascript";
-  private context: JavascriptContext;
+
+  protected context: JavascriptContext;
+  protected crossExtensionSteps = {
+    git: (ctx: GitContext) => ctx.addGitIgnorePattern("node_modules"),
+    "startup-script": (ctx: StartupScriptContext) =>
+      ctx.addStartupCommand("npm install")
+  };
 
   constructor() {
+    super();
     this.context = new JavascriptContext();
-  }
-
-  public register(context: Context) {
-    context.addExtensionContext(this.extensionId, this.context);
-
-    const startupContext = context.getExtensionContext("startupScript") as
-      | StartupScriptContext
-      | undefined;
-    if (startupContext) {
-      startupContext.addStartupCommand("npm install");
-    }
   }
 
   public getConfigOptions() {
