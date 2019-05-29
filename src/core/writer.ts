@@ -15,6 +15,13 @@ class Writer {
 
   public writeFile(fileName: string, content: string, permisisons?: string) {
     const location = path.join(this.baseLocation, fileName);
+
+    // Check for the directory first
+    const directory = path.dirname(location);
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory);
+    }
+
     this.outstandingWrites.push(
       fs.promises.writeFile(location, content).then(() => {
         if (permisisons) {

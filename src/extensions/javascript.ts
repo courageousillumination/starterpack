@@ -7,9 +7,18 @@ import { GitContext } from "./git";
 
 export class JavascriptContext {
   private devDependencies: { [index: string]: string } = {};
+  private scripts: { [index: string]: string } = {};
 
   addDevDependency(dependency: string, version?: string) {
     this.devDependencies[dependency] = version ? version : "*";
+  }
+
+  addScript(name: string, script: string) {
+    this.scripts[name] = script;
+  }
+
+  getScripts() {
+    return this.scripts;
   }
 
   getDevDependencies() {
@@ -47,6 +56,7 @@ class JavascriptExtension extends Extension {
       "package.json",
       JSON.stringify(this.buildPackageJson(config), undefined, 4)
     );
+    writer.writeFile("src/index.js", "");
   }
 
   private buildPackageJson(config: ProjectConfiguration) {
@@ -55,6 +65,10 @@ class JavascriptExtension extends Extension {
     };
     if (this.context.getDevDependencies()) {
       packageJson["devDependencies"] = this.context.getDevDependencies();
+    }
+
+    if (this.context.getScripts()) {
+      packageJson["scripts"] = this.context.getScripts();
     }
     return packageJson;
   }
