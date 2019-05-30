@@ -9,7 +9,9 @@ export abstract class Extension {
    * Stores a map of extensionId to steps functions.
    * The step function is given the context for the other extension.
    */
-  protected crossExtensionSteps: { [index: string]: (ctx: any) => void } = {};
+  protected crossExtensionSteps: {
+    [index: string]: (ctx: any, globalContext: Context) => void;
+  } = {};
 
   /**
    * If this extension wants to expose a context to other extensions it should be included here.
@@ -45,7 +47,7 @@ export abstract class Extension {
     for (const key of Object.keys(this.crossExtensionSteps)) {
       const context = globalContext.getExtensionContext(key);
       if (context) {
-        this.crossExtensionSteps[key](context);
+        this.crossExtensionSteps[key](context, globalContext);
       }
     }
   }

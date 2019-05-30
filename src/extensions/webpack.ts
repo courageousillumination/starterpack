@@ -2,7 +2,26 @@ import { Extension } from "../core/extensions";
 import Writer from "../core/writer";
 import { JavascriptContext } from "./javascript";
 
-export class WebpackContext {}
+export class WebpackContext {
+  private resolveExtensions: string[] = [".js"];
+  private moduleRules: any[] = [];
+
+  addResolveExtension(extension: string) {
+    this.resolveExtensions.push(extension);
+  }
+
+  addModuleRule(rule: any) {
+    this.moduleRules.push(rule);
+  }
+
+  getResolveExtensions(): string[] {
+    return this.resolveExtensions;
+  }
+
+  getModuleRules(): any[] {
+    return this.moduleRules;
+  }
+}
 
 class WebpackExtension extends Extension {
   public extensionId: string = "webpack";
@@ -10,9 +29,9 @@ class WebpackExtension extends Extension {
   protected context: WebpackContext;
   protected crossExtensionSteps = {
     javascript: (ctx: JavascriptContext) => {
-      ctx.addDevDependency("webpack");
-      ctx.addDevDependency("webpack-cli");
-      ctx.addDevDependency("webpack-dev-server");
+      ctx.addDependency("webpack");
+      ctx.addDependency("webpack-cli");
+      ctx.addDependency("webpack-dev-server");
       ctx.addScript("run-dev-server", "webpack-dev-server --open");
     }
   };
@@ -27,16 +46,20 @@ class WebpackExtension extends Extension {
   }
 
   private generateWebpackConfig(): string {
-    return (
-      "const path = require('path');\n" +
-      "module.exports = {\n" +
-      "  entry: './src/index.js',\n" +
-      "  output: {\n" +
-      "    filename: 'main.js',\n" +
-      "    path: path.resolve(__dirname, 'dist')\n" +
-      "  }\n" +
-      "};\n"
-    );
+    const config: any = {
+      entry: "./src/index.jsx",
+      output: {
+        filename: "bundle.js"
+      },
+      module: {
+        rules: this.context.getModuleRules()
+      },
+      resolve: {
+        extensions: this.context.getResolveExtensions()
+      }
+    };
+
+    return `module.exports = ${JSON.stringify(config, undefined, 2)};`;
   }
 }
 

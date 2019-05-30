@@ -1,28 +1,49 @@
 import { Extension } from "../core/extensions";
 import Writer from "../core/writer";
 import ProjectConfiguration from "../core/project-config";
-import Context from "../core/context";
 import { StartupScriptContext } from "./startup-script";
 import { GitContext } from "./git";
 
 export class JavascriptContext {
   private devDependencies: { [index: string]: string } = {};
+  private dependencies: { [index: string]: string } = {};
   private scripts: { [index: string]: string } = {};
+  private indexContent: string[] = [];
 
-  addDevDependency(dependency: string, version?: string) {
-    this.devDependencies[dependency] = version ? version : "*";
+  addDependency(
+    dependency: string,
+    dev: boolean = true, // Defaults to true since a lot of the things we install are dev tools.
+    version: string = "*"
+  ) {
+    if (dev) {
+      this.devDependencies[dependency] = version;
+    } else {
+      this.dependencies[dependency] = version;
+    }
   }
 
   addScript(name: string, script: string) {
     this.scripts[name] = script;
   }
 
+  addIndexContent(content: string) {
+    this.indexContent.push(content);
+  }
+
   getScripts() {
     return this.scripts;
   }
 
+  getDependencies() {
+    return this.dependencies;
+  }
+
   getDevDependencies() {
     return this.devDependencies;
+  }
+
+  getIndexContent() {
+    return this.indexContent;
   }
 }
 
@@ -56,7 +77,10 @@ class JavascriptExtension extends Extension {
       "package.json",
       JSON.stringify(this.buildPackageJson(config), undefined, 4)
     );
-    writer.writeFile("src/index.js", "");
+    writer.writeFile(
+      "src/index.jsx",
+      this.context.getIndexContent().join("\n")
+    );
   }
 
   private buildPackageJson(config: ProjectConfiguration) {
@@ -65,6 +89,10 @@ class JavascriptExtension extends Extension {
     };
     if (this.context.getDevDependencies()) {
       packageJson["devDependencies"] = this.context.getDevDependencies();
+    }
+
+    if (this.context.getDependencies()) {
+      packageJson["dependencies"] = this.context.getDependencies();
     }
 
     if (this.context.getScripts()) {
